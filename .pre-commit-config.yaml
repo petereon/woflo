@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+    - id: check-builtin-literals
+      args: ['--no-allow-dict-kwargs']
+    - id: debug-statements
+    - id: end-of-file-fixer
+    - id: name-tests-test
+    - id: sort-simple-yaml
+    - id: trailing-whitespace
+      exclude: ".*.md$"
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v2.2.1
+    hooks:
+    - id: add-trailing-comma
+  - repo: local
+    hooks:
+      - id: poe-lint
+        name: poe-lint
+        stages: [commit]
+        language: system
+        entry: poetry run poe lint
+        types: [python]
+        pass_filenames: false
