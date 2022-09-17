@@ -38,10 +38,10 @@ class Task:
         p = Process(target=wrapped_fn, args=args, kwargs=kwargs)
         p.start()
 
-        return RunningTaskInstance(self, instance_name, p, recv_end)
+        return TaskRun(self, instance_name, p, recv_end)
 
 
-class RunningTaskInstance:
+class TaskRun:
     task: Task
     instance_name: str
     process: Process
