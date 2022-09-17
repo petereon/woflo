@@ -1,3 +1,67 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool]
+
+[tool.black]
+line-length = 140
+skip-string-normalization = true
+
+[tool.coverage.run]
+omit = ['*test*']
+
+[tool.flake8]
+ignore = ["E203", "E266", "E501", "W503", "F403", "F401"]
+max-line-length = 140
+max-complexity = 18
+select = ["B","C","E","F","W","T4","B9"]
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+files = ["src","test"]
+error_summary = true
+warn_return_any = true
+warn_no_return = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+show_column_numbers = true
+show_error_context = true
+ignore_missing_imports = true
+
+[tool.poe]
+verbosity = -1
+
+[tool.poe.tasks]
+add = { shell = "poetry add" }
+install = { shell = "poetry install" }
+build = { shell = "poetry build" }
+isort = { shell = "poetry run isort ./src/" }
+toml-sort = {shell = "poetry run toml-sort -i ./*.toml"}
+black = { shell = "poetry run black ./src/" }
+mypy = { shell = "poetry run mypy ./src/" }
+flake8 = {shell = "poetry run pflake8 ./src/"}
+perflint = { shell = "poetry run perflint ./src/" }
+lint = { shell = """echo 'Running toml-sort ..' && poetry run poe toml-sort &&
+                    echo 'Running isort...' && poetry run poe isort &&
+                    echo 'Running black...' && poetry run poe black &&
+                    echo "Running unify..." ; poetry run unify ./src -r -i &&
+                    echo 'Running mypy...' && poetry run poe mypy &&
+                    echo 'Running flake8...' && poetry run poe flake8 &&
+                    echo 'Running perflint...' && poetry run poe perflint"""}
+"lint:watch" = {shell = "poetry run poe lint; poetry run watchmedo shell-command --patterns='*.py;*.feature;*.toml' --recursive --drop --command='echo \"\nDetected changes, rerunning...\n\" ; poetry run poe lint'"}
+test = { shell = "poetry run ward" }
+"test:watch" = { shell = "poetry run ward; poetry run watchmedo shell-command --patterns='*.py;*.feature;*.toml' --recursive --drop --command='poetry run ward'" }
+docs = { shell = "poetry run pydoc-markdown > APIDOC.md"}
+install-self = { shell = "poetry run pip install ./dist/$(ls ./dist | grep .whl | tail -n 1) --force-reinstall" }
+uninstall-self = { shell = "poetry run pip uninstall woflo" }
+
 [tool.poetry]
 name = "woflo"
 version = "0.1.0"
@@ -10,38 +74,41 @@ keywords = ["python"]
 classifiers = ['License :: OSI Approved :: MIT License', 'Programming Language :: Python :: 3']
 packages = [{ include = "woflo", from = "src" }]
 
-[tool.poe]
-verbosity = -1
+[tool.poetry.dependencies]
+python = "^3.7.8"
+cytoolz = "^0.12.0"
 
-[tool.poe.tasks]
-add = { shell = "poetry add" }
-install = { shell = "poetry install" }
-build = { shell = "poetry build" }
-
-isort = { shell = "poetry run isort ./src/" }
-black = { shell = "poetry run black ./src/" }
-mypy = { shell = "poetry run mypy ./src/" }
-flake8 = {shell = "poetry run flake8 ./src/"}
-perflint = { shell = "poetry run perflint ./src/" }
-"lint" = { shell = """echo 'Running isort...' && poetry run poe isort &&
-                    echo 'Running black...' && poetry run poe black &&
-                    echo 'Running mypy...' && poetry run poe mypy &&
-                    echo 'Running flake8...' && poetry run poe flake8 &&
-                    echo 'Running perflint...' && poetry run poe perflint"""}
-
-"lint:watch" = {shell = "poetry run poe lint; poetry run watchmedo shell-command --patterns='*.py;*.feature;*.toml' --recursive --drop --command='echo \"\nDetected changes, rerunning...\n\" ; poetry run poe lint'"}
-
-"test" = { shell = "poetry run ward" }
-"test:watch" = { shell = "poetry run ward; poetry run watchmedo shell-command --patterns='*.py;*.feature;*.toml' --recursive --drop --command='poetry run ward'" }
-
-docs = { shell = "poetry run pydoc-markdown > APIDOC.md"}
-
-install-self = { shell = "poetry run pip install ./dist/$(ls ./dist | grep .whl | tail -n 1) --force-reinstall" }
-uninstall-self = { shell = "poetry run pip uninstall woflo" }
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry.dev-dependencies]
+black = { version = "*", allow-prereleases = true }
+mypy = "^0.942"
+pyproject-flake8 = "*"
+flake8 = "<5"
+flake8-bugbear = "^22.7.1"
+flake8-simplify = "^0.19.2"
+flake8-pie = "^0.15.0"
+flake8-bandit = "^3.0.0"
+flake8-cognitive-complexity = "^0.1.0"
+flake8-expression-complexity = "^0.0.11"
+radon = "^5.1.0"
+xenon = "^0.9.0"
+flake8-quotes = "^3.3.1"
+flake8-print = "^5.0.0"
+flake8-eradicate = "^1.2.1"
+flake8-comments = "^0.1.2"
+toml-sort = "*"
+isort = "*"
+unify = "*"
+perflint = "^0.7.3"
+expycted = "^0.5.0"
+ward = "^0.66.1-beta.0"
+mock = "4.0.3"
+mutatest = "*"
+watchdog = "^2.1.9"
+ward-coverage = "^0.1.4"
+poethepoet = "*"
+pydoc-markdown = "^4.6.3"
+pre-commit = "*"
+detect-secrets = "^1.2.0"
 
 [[tool.pydoc-markdown.loaders]]
 type = 'python'
@@ -52,95 +119,3 @@ type = 'markdown'
 
 [tool.ward]
 hook_module = ["ward_coverage"]
-
-[tool.coverage.run]
-omit = ['*test*']
-
-[tool.mypy]
-files = ["src","test"]
-
-error_summary = true
-
-warn_return_any = true
-warn_no_return = true
-warn_unused_configs = true
-warn_redundant_casts = true
-warn_unreachable = true
-warn_unused_ignores = true
-
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-
-show_column_numbers = true
-show_error_context = true
-
-ignore_missing_imports = true
-
-[tool.black]
-line-length = 140
-
-[tool.isort]
-profile = "black"
-
-[tool.flake8]
-ignore = ["E203", "E266", "E501", "W503", "F403", "F401"]
-max-line-length = 140
-max-complexity = 18
-select = ["B","C","E","F","W","T4","B9"]
-
-
-[tool.poetry.dependencies]
-python = "^3.7.8"
-cytoolz = "^0.12.0"
-
-
-[tool.poetry.dev-dependencies]
-# Code Scanning and Formatting
-black = { version = "*", allow-prereleases = true }
-mypy = "^0.942"
-
-## Bugs
-flake8-bugbear = "^22.7.1"
-flake8-simplify = "^0.19.2"
-flake8-pie = "^0.15.0"
-flake8-bandit = "^3.0.0"
-
-## Complexity
-flake8-cognitive-complexity = "^0.1.0"
-flake8-expression-complexity = "^0.0.11"
-radon = "^5.1.0"
-xenon = "^0.9.0"
-
-## Lints
-flake8-quotes = "^3.3.1"
-flake8-print = "^5.0.0"
-flake8-eradicate = "^1.2.1"
-flake8-comments = "^0.1.2"
-toml-sort = "*"
-isort = "*"
-
-## Performance
-perflint = "^0.7.3"
-
-# Expect Pattern Testing
-expycted = "^0.5.0"
-
-# Unit Testing
-ward = "^0.66.1-beta.0"
-mock = "4.0.3"
-mutatest = "*"
-watchdog = "^2.1.9"
-
-# Coverage
-ward-coverage = "^0.1.4"
-
-# Task Runner
-poethepoet = "*"
-
-# Docs
-pydoc-markdown = "^4.6.3"
-
-# CI
-pre-commit = "*"
-detect-secrets = "^1.2.0"
-flake9 = "^3.8.3"
