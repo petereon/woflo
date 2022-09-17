@@ -64,9 +64,13 @@ class RunningTaskInstance:
             logger.info(f'Waiting for task {self.instance_name} to finish')
             self.process.join()
 
+    def terminate(self) -> None:
+        if self.process.is_alive():
+            self.process.terminate()
+
     def kill(self) -> None:
         if self.process.is_alive():
-            self.process._pid
+            self.process.kill()
 
 
 @curry
