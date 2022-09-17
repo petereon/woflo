@@ -1,11 +1,20 @@
-from multiprocessing import Pipe, Process
-from multiprocessing.connection import _ConnectionBase
+import logging
 from typing import Any, Callable, Optional
 from uuid import uuid4
 
 from cytoolz.functoolz import curry
+from multiprocess.connection import Pipe, _ConnectionBase
+from multiprocess.dummy import Process
 
-from woflo.util import logger
+logger = logging.getLogger('woflo')
+logger.setLevel(logging.INFO)
+
+ch = logging.StreamHandler()
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+
+logger.addHandler(ch)
 
 
 class Task:
@@ -14,18 +23,20 @@ class Task:
 
     def __init__(self, fn: Callable, name: Optional[str] = None):
         self.fn = fn  # type: ignore
-        self.name = name if name else getattr(fn, '__name__', 'Unnamed')
+        self.name = name if name else getattr(fn, '__name__', 'task')
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        instance_name = f'{uuid4()}-{self.name}'
+        instance_name = f'{self.name}-{uuid4()}'
         logger.info(f'Starting task `{instance_name}`')
-        send_end, recv_end = Pipe(False)
+        send_end, recv_end = Pipe()
 
         def wrapped_fn(*args: Any, **kwargs: Any) -> None:
-            send_end.send(self.fn(args=args, kwargs=kwargs))
+            result = self.fn(*args, **kwargs)
+            send_end.send(result)
             logger.info(f'Finished task {instance_name}')
 
         p = Process(target=wrapped_fn, args=args, kwargs=kwargs)
+        p.start()
 
         return RunningTaskInstance(self, instance_name, p, recv_end)
 
