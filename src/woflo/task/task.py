@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from cytoolz.functoolz import curry
 from multiprocess.connection import Pipe, _ConnectionBase
-from multiprocess.dummy import Process
+from multiprocess.context import Process
 
 logger = logging.getLogger('woflo')
 logger.setLevel(logging.INFO)
@@ -58,6 +58,15 @@ class RunningTaskInstance:
             logger.info(f'Waiting for task {self.instance_name} to finish')
             self.process.join()
         return self.pipe_receive.recv()
+
+    def wait(self) -> None:
+        if self.process.is_alive():
+            logger.info(f'Waiting for task {self.instance_name} to finish')
+            self.process.join()
+
+    def kill(self) -> None:
+        if self.process.is_alive():
+            self.process._pid
 
 
 @curry

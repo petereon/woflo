@@ -1,4 +1,0 @@
-#!/bin/sh
-poetry run wily build
-poetry run wily report src -n 5
-poetry run wily rank
