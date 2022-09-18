@@ -58,7 +58,7 @@ class Task:
                     time.sleep(self.retry_wait_time)
 
             if not success and exc:
-                raise exc
+                send_end.send(exc)
 
         p = Process(target=wrapped_fn, args=args, kwargs=kwargs)
         p.start()
@@ -78,11 +78,14 @@ class TaskRun:
         self.process = process
         self.pipe_receive = pipe_receive
 
-    def get_result(self) -> Any:
+    def get_result(self, raise_exceptions: bool = False) -> Any:
         if self.process.is_alive():
             logger.info(f'Waiting for task {self.instance_name} to finish')
             self.process.join()
-        return self.pipe_receive.recv()
+        result = self.pipe_receive.recv()
+        if raise_exceptions and isinstance(result, Exception):
+            raise result
+        return result
 
     def wait(self) -> None:
         if self.process.is_alive():
