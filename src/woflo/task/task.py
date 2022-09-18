@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import logging
 import time
-from typing import Any, Callable, Optional, Tuple
+from functools import partial
+from typing import Any, Callable, Optional, Tuple, Union, cast, overload
 from uuid import uuid4
 
-from cytoolz.functoolz import curry
 from multiprocess.connection import Pipe, _ConnectionBase
 from multiprocess.context import Process
 
@@ -34,7 +36,7 @@ class Task:
             raise ValueError('`retry_wait_time` must be a positive value')
         self.retry_wait_time = retry_wait_time
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:  # noqa: CCR001
+    def __call__(self, *args: Any, **kwargs: Any) -> TaskRun:  # noqa: CCR001
         instance_name = f'{self.name}-{uuid4()}'
         logger.info(f'Starting task `{instance_name}`')
         send_end, recv_end = Pipe()
@@ -101,6 +103,32 @@ class TaskRun:
             self.process.kill()
 
 
-@curry
-def task(fn: Callable, name: Optional[str] = None, retries: int = 0, retry_wait_time: float = 0) -> Task:
+@overload
+def task(fn: Callable) -> Task:
+    ...
+
+
+@overload
+def task(
+    *,
+    name: str = None,
+    retries: int = 0,
+    retry_wait_time: Union[float, int] = 0,
+) -> Callable[[Callable], Task]:
+    ...
+
+
+def task(
+    fn: Callable = None,
+    *,
+    name: str = None,
+    retries: int = 0,
+    retry_wait_time: Union[float, int] = 0,
+) -> Any:
+    if fn is None:
+        return partial(task, name=name, retries=retries, retry_wait_time=retry_wait_time)
+    else:
+        if not callable(fn):
+            raise ValueError('Wrapped object must be callable')
+
     return Task(fn=fn, name=name, retries=retries, retry_wait_time=retry_wait_time)
