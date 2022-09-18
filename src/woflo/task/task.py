@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Any, Callable, Optional, Tuple
 from uuid import uuid4
 
@@ -53,7 +54,8 @@ class Task:
                     logger.info(f'Finished task {instance_name}')
                     break
                 if retry_count < self.retries:
-                    logger.info(f'Failed task {instance_name}, retrying')
+                    logger.info(f'Failed task {instance_name}, retrying in {self.retry_wait_time}s ...')
+                    time.sleep(self.retry_wait_time)
 
             if not success and exc:
                 raise exc
