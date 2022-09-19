@@ -80,7 +80,9 @@ class TaskRun:
         self.process = process
         self.pipe_receive = pipe_receive
 
-    def get_result(self, raise_exceptions: bool = False) -> Any:
+    def get_result(self, wait: bool = True, raise_exceptions: bool = False) -> Any:
+        if not wait and self.process.is_alive:
+            raise RuntimeError(f'Task {self.instance_name} is still running')
         self.wait()
         result = self.pipe_receive.recv()
         if raise_exceptions and isinstance(result, Exception):

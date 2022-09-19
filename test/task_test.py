@@ -162,3 +162,15 @@ def _():
     killed_task_run.terminate()
     time.sleep(1)
     assert not killed_task_run.process.is_alive()
+
+
+@test('Getting value without waiting')
+def _():
+    @task
+    def test_task():
+        time.sleep(5)
+
+    test_task_run = test_task()
+    with raises(RuntimeError) as e:
+        test_task_run.get_result(wait=False)
+    assert str(e.raised) == f'Task {test_task_run.instance_name} is still running'
