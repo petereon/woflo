@@ -1,4 +1,4 @@
-from multiprocess import Queue
+from multiprocess import Lock, Value
 from ward import raises, skip, test
 
 from woflo.task.task import Task, TaskRun, task
@@ -106,17 +106,18 @@ def _():
     assert res == 5
 
 
-@skip('Need to figure out how to properly test multiprocessing process')
+# @skip('Need to figure out how to properly test multiprocessing process')
 @test('Running a failing task with retries')
 def _():
-
-    q = Queue()
+    val = Value('i', 0)
+    lock = Lock()
 
     @task(retries=3)
-    def failing():
-        q.put(0)
+    def failing(val, lock):
+        with lock:
+            val.value += 1
         raise Exception('Test fail')
 
-    failing().wait()
+    failing(val, lock).wait()
 
-    assert q.qsize() == 4
+    assert val.value == 4
