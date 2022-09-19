@@ -1,7 +1,9 @@
+import time
+
 from multiprocess import Lock, Value
 from ward import raises, skip, test
 
-from woflo.task.task import Task, TaskRun, task
+from woflo.task.task import Task, task
 
 
 @test('Callable decorated with `task` becomes a Task')
@@ -106,7 +108,6 @@ def _():
     assert res == 5
 
 
-# @skip('Need to figure out how to properly test multiprocessing process')
 @test('Running a failing task with retries')
 def _():
     val = Value('i', 0)
@@ -121,3 +122,43 @@ def _():
     failing(val, lock).wait()
 
     assert val.value == 4
+
+
+@test('Running a failing task and raising an exception')
+def _():
+    @task
+    def failing():
+        raise Exception('Test fail')
+
+    with raises(Exception) as e:
+        failing().get_result(raise_exceptions=True)
+
+    assert str(e.raised) == 'Test fail'
+
+
+@test('Killing a task')
+def _():
+    @task
+    def killed():
+        time.sleep(10)
+
+    killed_task_run = killed()
+
+    assert killed_task_run.process.is_alive()
+    killed_task_run.kill()
+    time.sleep(1)
+    assert not killed_task_run.process.is_alive()
+
+
+@test('Terminating a task')
+def _():
+    @task
+    def terminated():
+        time.sleep(10)
+
+    killed_task_run = terminated()
+
+    assert killed_task_run.process.is_alive()
+    killed_task_run.terminate()
+    time.sleep(1)
+    assert not killed_task_run.process.is_alive()

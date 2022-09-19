@@ -81,9 +81,7 @@ class TaskRun:
         self.pipe_receive = pipe_receive
 
     def get_result(self, raise_exceptions: bool = False) -> Any:
-        if self.process.is_alive():
-            logger.info(f'Waiting for task {self.instance_name} to finish')
-            self.process.join()
+        self.wait()
         result = self.pipe_receive.recv()
         if raise_exceptions and isinstance(result, Exception):
             raise result
