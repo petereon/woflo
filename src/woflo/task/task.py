@@ -7,7 +7,7 @@ from typing import Any, Callable, Optional, Tuple, Type, Union, overload
 from uuid import uuid4
 
 from woflo.runners.base import BaseTaskRun
-from woflo.runners.multiprocessing import MultiprocessTaskRun
+from woflo.runners.multiprocess import MultiprocessTaskRun
 from woflo.util import logger
 
 
@@ -68,7 +68,7 @@ def task(fn: Callable) -> Task:
 
 @overload
 def task(
-    *, name: str = None, retries: int = 0, retry_wait_time: Union[float, int] = 0, runner: BaseTaskRun = MultiprocessTaskRun
+    *, name: str = None, retries: int = 0, retry_wait_time: Union[float, int] = 0, runner: Type[BaseTaskRun] = MultiprocessTaskRun
 ) -> Callable[[Callable], Task]:
     ...
 
@@ -79,7 +79,7 @@ def task(
     name: str = None,
     retries: int = 0,
     retry_wait_time: Union[float, int] = 0,
-    runner: BaseTaskRun = MultiprocessTaskRun,
+    runner: Type[BaseTaskRun] = MultiprocessTaskRun,
 ) -> Any:
     if fn is None:
         return partial(task, name=name, retries=retries, retry_wait_time=retry_wait_time, runner=runner)

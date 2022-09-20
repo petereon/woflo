@@ -12,14 +12,11 @@ if TYPE_CHECKING:
 
 
 class MultiprocessTaskRun(BaseTaskRun):
-    task: Task
-    instance_name: str
-    fn: Callable
     process: Process
     pipe_send: _ConnectionBase
     pipe_receive: _ConnectionBase
 
-    def __init__(self, task: Task, instance_name: str, fn: Callable, args: list, kwargs: dict):
+    def __init__(self, task: Task, instance_name: str, fn: Callable, args: tuple, kwargs: dict):
         super().__init__(task, instance_name, fn, args, kwargs)
         self.task = task
         self.instance_name = instance_name

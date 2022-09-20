@@ -1,16 +1,17 @@
-from typing import Any, Callable
+from __future__ import annotations
 
-from woflo import Task
+from typing import TYPE_CHECKING, Any, Callable
+
 from woflo.runners.base import BaseTaskRun
+
+if TYPE_CHECKING:
+    from woflo.task import Task
 
 
 class SequentialTaskRun(BaseTaskRun):
-    task: Task
-    instance_name: str
-    fn: Callable
     __result: Any
 
-    def __init__(self, task: Task, instance_name: str, fn: Callable, args: list, kwargs: dict):
+    def __init__(self, task: Task, instance_name: str, fn: Callable, args: tuple, kwargs: dict):
         super().__init__(task, instance_name, fn, args, kwargs)
         self.task = task
         self.instance_name = instance_name
