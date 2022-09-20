@@ -36,7 +36,7 @@ class Task:
         self.retry_wait_time = retry_wait_time
         self.runner = runner
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Type[BaseTaskRun]:  # noqa: CCR001
+    def __call__(self, *args: Any, **kwargs: Any) -> BaseTaskRun:  # noqa: CCR001
         instance_name = f'{self.name}-{uuid4()}'
 
         def wrapped_fn(*args: Any, **kwargs: Any) -> Tuple[bool, Any]:  # noqa: CCR001
