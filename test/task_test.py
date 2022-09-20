@@ -136,32 +136,18 @@ def _():
     assert str(e.raised) == 'Test fail'
 
 
-@test('Killing a task')
+@test('Stopping a task')
 def _():
     @task
-    def killed():
+    def stopped():
         time.sleep(10)
 
-    killed_task_run = killed()
+    stopped_task_run = stopped()
 
-    assert killed_task_run.process.is_alive()
-    killed_task_run.kill()
+    assert stopped_task_run.process.is_alive()
+    stopped_task_run.stop()
     time.sleep(1)
-    assert not killed_task_run.process.is_alive()
-
-
-@test('Terminating a task')
-def _():
-    @task
-    def terminated():
-        time.sleep(10)
-
-    killed_task_run = terminated()
-
-    assert killed_task_run.process.is_alive()
-    killed_task_run.terminate()
-    time.sleep(1)
-    assert not killed_task_run.process.is_alive()
+    assert not stopped_task_run.process.is_alive()
 
 
 @test('Getting value without waiting')

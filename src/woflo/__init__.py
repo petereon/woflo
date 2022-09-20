@@ -1,1 +1,1 @@
-from woflo.task import task
+from woflo.task import Task, task
