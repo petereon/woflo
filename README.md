@@ -103,6 +103,13 @@ napping.wait()
 assert napping.get_result() == "Well rested"
 ```
 
+## Roadmap
+
+- [ ] Setup GitHub Actions, SonarCloud monitoring a Codecov
+- [ ] Make a PyPI Package
+- [ ] Implement a Dask runner
+- [ ] Decide on final API and create a version 1.x.x
+
 
 
 
