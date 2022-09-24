@@ -1,3 +1,5 @@
+.DS_Store
+
 # Poetry artifacts
 poetry.lock
 

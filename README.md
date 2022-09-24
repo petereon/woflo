@@ -131,3 +131,10 @@ The defualt task runner is `MultiprocessTaskRun`, which can run multiple tasks, 
 - [x] ~~Make a PyPI Package~~
 - [ ] Decide on final API and create a version 1.x.x
 - [ ] Implement a Dask runner
+- [ ] Implement a Thread runner
+- [ ] Implement an Async runner
+
+## Known issues
+
+- [ ] Processes potentially inherint a large in-memory state in MultiprocessTaskRun
+- [ ] Imports need some refactoring
