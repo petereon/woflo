@@ -15,6 +15,24 @@ Currently this includes:
 - parallelism
 - logging
 
+## Installation
+
+To download from PyPI use:
+
+```shell
+pip install woflo
+```
+
+To install from source:
+
+```shell
+git clone https://github.com/petereon/woflo.git
+cd woflo
+poetry build
+cd dist
+pip install ./woflo-<version>-py3-none-any.whl
+```
+
 ## Examples
 
 Intended usage is by utilizing a decorator `@task`, consider a very simple example which would run 10 sleepy workers in parallel without blocking the main thread:
