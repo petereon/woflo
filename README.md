@@ -109,7 +109,7 @@ The defualt task runner is `MultiprocessTaskRun`, which can run multiple tasks, 
 
 ## Roadmap
 
-- [ ] Setup GitHub Actions, SonarCloud monitoring a Codecov
-- [ ] Make a PyPI Package
+- [x] ~~Setup GitHub Actions, SonarCloud monitoring and Codecov~~
+- [x] ~~Make a PyPI Package~~
 - [ ] Decide on final API and create a version 1.x.x
 - [ ] Implement a Dask runner
