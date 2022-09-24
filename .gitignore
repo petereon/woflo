@@ -14,3 +14,10 @@ coverage.xml
 dist/
 
 .vscode
+
+.env
+
+# Terraform
+.terraform
+.terraform.lock.hcl
+*.tfstate*
