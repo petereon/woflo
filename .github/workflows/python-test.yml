@@ -35,7 +35,7 @@ jobs:
     - name: Build and install the library
       run: |
         poe build
-    - name: Test with pytest
+    - name: Test with ward
       run: |
         export PYTHONPATH=$(pwd)/src
         poe test
