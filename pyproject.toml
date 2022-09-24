@@ -57,8 +57,7 @@ lint = { shell = """echo 'Running toml-sort ..' ; poetry run poe toml-sort ;
                     echo 'Running black...' ; poetry run poe black ;
                     echo "Running unify..." ; poetry run unify ./ -r -i ;
                     echo 'Running mypy...' ; poetry run poe mypy ;
-                    echo 'Running flake8...' ; poetry run poe flake8 ;
-                    echo 'Running perflint...' ; poetry run poe perflint"""}
+                    echo 'Running flake8...' ; poetry run poe flake8"""}
 "lint:watch" = {shell = "poetry run poe lint; poetry run watchmedo shell-command --patterns='*.py;*.feature;*.toml' --recursive --drop --command='echo \"\nDetected changes, rerunning...\n\" ; poetry run poe lint'"}
 test = { shell = "poetry run ward" }
 "test:watch" = { shell = "poetry run ward; poetry run watchmedo shell-command --patterns='*.py;*.feature;*.toml' --recursive --drop --command='poetry run ward'" }
