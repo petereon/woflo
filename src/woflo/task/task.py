@@ -28,11 +28,16 @@ class Task:
     ):
         self.fn = fn  # type: ignore
         self.name = name if name else getattr(fn, '__name__', 'task')
-        if (retries < 0) or (retries % 1 != 0):
-            raise ValueError('`retries` must be a positive integer')
+        if retries < 0:
+            retries = 0
+            logger.warn('`retries` must be a positive number, defaulting to 0')
+        elif retries % 1 != 0:
+            retries = int(round(retries))
+            logger.warn(f'`retries` must be a whole number, rounding to {retries}')
         self.retries = retries
         if retry_wait_time < 0:
-            raise ValueError('`retry_wait_time` must be a positive value')
+            retry_wait_time = 0
+            logger.warn('`retry_wait_time` must be a positive number, defaulting to 0')
         self.retry_wait_time = retry_wait_time
         self.runner = runner
 
@@ -43,9 +48,9 @@ class Task:
             def retry_block() -> Tuple[bool, Any]:
                 try:
                     result = self.fn(*args, **kwargs)
-                    return (True, result)
+                    return True, result
                 except Exception as e:
-                    return (False, e)
+                    return False, e
 
             for retry_count in range(self.retries + 1):
                 success, res = retry_block()

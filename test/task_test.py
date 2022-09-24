@@ -1,4 +1,5 @@
 import time
+from unittest.mock import patch
 
 from multiprocess import Lock, Value
 from ward import raises, skip, test
@@ -34,15 +35,13 @@ def _():
     assert test_task.retry_wait_time == 5
 
 
-@test('Retry wait time cannot be negative')
+@test('Set `retry_wait_time` to 0 when negative')
 def _():
-    with raises(ValueError) as e:
+    @task(retry_wait_time=-2)
+    def test_task():
+        pass
 
-        @task(retry_wait_time=-2)
-        def test_task():
-            pass
-
-    assert str(e.raised) == '`retry_wait_time` must be a positive value'
+    assert test_task.retry_wait_time == 0
 
 
 @test('Retries can be set')
@@ -54,26 +53,22 @@ def _():
     assert test_task.retries == 5
 
 
-@test('Retries have to be a positive number')
+@test('Set `retries` to 0 when negative')
 def _():
-    with raises(ValueError) as e:
+    @task(retries=-2)
+    def test_task():
+        pass
 
-        @task(retries=-2)
-        def test_task():
-            pass
-
-    assert str(e.raised) == '`retries` must be a positive integer'
+    assert test_task.retries == 0
 
 
-@test('Retries have to be an integer')
+@test('Round retries if not integer')
 def _():
-    with raises(ValueError) as e:
+    @task(retries=3.2)
+    def test_task():
+        pass
 
-        @task(retries=1.2)
-        def test_task():
-            pass
-
-    assert str(e.raised) == '`retries` must be a positive integer'
+    assert test_task.retries == 3
 
 
 @test('Wrapped object has to be callable')
