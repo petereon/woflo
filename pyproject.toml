@@ -67,7 +67,7 @@ uninstall-self = { shell = "poetry run pip uninstall woflo" }
 
 [tool.poetry]
 name = "woflo"
-version = "0.1.1"
+version = "0.8.0"
 description = "Python local-first no-bloat task orchestration framework "
 authors = ["Peter Vyboch <pvyboch1@gmail.com>"]
 license = "MIT"
