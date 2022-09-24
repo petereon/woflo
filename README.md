@@ -11,15 +11,7 @@ Currently this includes:
 - parallelism
 - logging
 
-## Extensibility
-
-It is designed to be easily extended by developing a custom `Task` runners. Library itself currently exposes two such runners, `MultiprocessTaskRun` and `SequentialTaskRun`. 
-
-Additionally `woflo` makes available a `BaseTaskRun`, an interface against which custom runners can be developed.
-
-The defualt task runner is `MultiprocessTaskRun`, which can run multiple tasks, or even multiple instances of the same task at the same time in parallel in separate Python process.
-
-## Example
+## Examples
 
 Intended usage is by utilizing a decorator `@task`, consider a very simple example which would run 10 sleepy workers in parallel without blocking the main thread:
 
@@ -102,6 +94,14 @@ assert napping.is_running()
 napping.wait()
 assert napping.get_result() == "Well rested"
 ```
+
+## Extensibility
+
+It is designed to be easily extended by developing a custom `Task` runners. Library itself currently exposes two such runners, `MultiprocessTaskRun` and `SequentialTaskRun`. 
+
+Additionally `woflo` makes available a `BaseTaskRun`, an interface against which custom runners can be developed.
+
+The defualt task runner is `MultiprocessTaskRun`, which can run multiple tasks, or even multiple instances of the same task at the same time in parallel in separate Python process.
 
 ## Roadmap
 
