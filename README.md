@@ -117,13 +117,35 @@ napping.wait()
 assert napping.get_result() == "Well rested"
 ```
 
-## Extensibility
+## Task Runners
 
 It is designed to be easily extended by developing a custom `Task` runners. Library itself currently exposes two such runners, `MultiprocessTaskRun` and `SequentialTaskRun`. 
 
 Additionally `woflo` makes available a `BaseTaskRun`, an interface against which custom runners can be developed.
 
 The defualt task runner is `MultiprocessTaskRun`, which can run multiple tasks, or even multiple instances of the same task at the same time in parallel in separate Python process.
+
+### MultiprocessTaskRun
+
+The defualt task runner, which can run multiple tasks, or even multiple instances of the same task at the same time in parallel in separate Python process.
+
+It offers two modes of operation:
+- `ForkProcess`, which forks a main process and inherits all of its state. Forking is default on Darwin and Linux (it is not available on Windows)
+- `SpawnProcess`, which spawns a new process with same global state
+
+This behavior can be configured by setting the `process_type`:
+
+```python
+from woflo.runners.multiprocess import SpawnProcess, MultiprocessTaskRun
+
+MultiprocessTaskRun.process_type = SpawnProcess
+
+@task(runner=MultiprocessTaskRun)
+def sleepy_worker():
+    time.sleep(5)
+    print('I am done')
+
+```
 
 ## Roadmap
 
@@ -136,5 +158,6 @@ The defualt task runner is `MultiprocessTaskRun`, which can run multiple tasks, 
 
 ## Known issues
 
-- [ ] Processes potentially inherint a large in-memory state in MultiprocessTaskRun
+- [x] ~~Processes potentially inherint a large in-memory state in MultiprocessTaskRun~~
+- [ ] `SpawnProcess` running into `OSError: [Errno 9] Bad file descriptor` on `macOS 12.6` when using `multiprocess.sharedctypes.Value` as reflected in [this issue](https://github.com/uqfoundation/multiprocess/issues/115)
 - [ ] Imports need some refactoring
