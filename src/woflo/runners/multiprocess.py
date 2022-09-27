@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable
+import platform
+from typing import TYPE_CHECKING, Any, Callable, Type
 
 from multiprocess.connection import Pipe, _ConnectionBase
-from multiprocess.context import Process
+from multiprocess.context import ForkProcess, Process, SpawnProcess
 
 from woflo.runners.base import BaseTaskRun
 
@@ -15,6 +16,7 @@ class MultiprocessTaskRun(BaseTaskRun):
     process: Process
     pipe_send: _ConnectionBase
     pipe_receive: _ConnectionBase
+    process_type: Type[Process] = ForkProcess if not platform.system() == 'Windows' else SpawnProcess
 
     def __init__(self, task: Task, instance_name: str, fn: Callable, args: tuple, kwargs: dict):
         super().__init__(task, instance_name, fn, args, kwargs)
@@ -22,7 +24,7 @@ class MultiprocessTaskRun(BaseTaskRun):
         self.instance_name = instance_name
         self.pipe_send, self.pipe_receive = Pipe()
 
-        self.process = Process(target=lambda *args, **kwargs: self.pipe_send.send(fn(*args, **kwargs)), args=args, kwargs=kwargs)
+        self.process = self.process_type(target=lambda *args, **kwargs: self.pipe_send.send(fn(*args, **kwargs)), args=args, kwargs=kwargs)
 
         self.process.start()
 
