@@ -19,7 +19,10 @@ class SequentialTaskRun(BaseTaskRun):
 
     def get_result(self) -> Any:
         super().get_result()
-        return self.__result
+        success, value = self.__result
+        if success:
+            return value
+        raise value
 
     def wait(self) -> None:
         super().wait()
