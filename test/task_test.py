@@ -4,7 +4,8 @@ from unittest.mock import patch
 from multiprocess import Lock, Value
 from ward import raises, skip, test
 
-from woflo.task.task import Task, task
+from woflo.runners import SequentialTaskRun
+from woflo.task import Task, task
 
 
 @test('Callable decorated with `task` becomes a Task')
@@ -149,9 +150,28 @@ def _():
 def _():
     @task
     def test_task():
-        time.sleep(5)
+        time.sleep(2)
 
     test_task_run = test_task()
     with raises(RuntimeError) as e:
         test_task_run.get_result(wait=False)
     assert str(e.raised) == f'Task {test_task_run.instance_name} is still running'
+
+
+@test('Task runner can be set to `SequentialTaskRun`')
+def _():
+    @task(runner=SequentialTaskRun)
+    def test_task():
+        return 1
+
+    assert isinstance(test_task, Task)
+    assert test_task.fn() == 1
+
+
+@test('`SequentialTaskRun` returns properly')
+def _():
+    @task(runner=SequentialTaskRun)
+    def test_task():
+        return 1
+
+    assert test_task().get_result() == 1

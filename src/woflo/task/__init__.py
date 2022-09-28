@@ -1,1 +1,1 @@
-from woflo.task.task import Task, task  # noqa: F401
+from woflo.task.__task import Task, task  # noqa: F401
