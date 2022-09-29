@@ -8,9 +8,11 @@
 
 ## Overview
 
-**woflo** is a Python local-first no-bloat extensible task orchestration framework
+**woflo** is a Python local-first no-bloat extensible task orchestration framework.
 
-Main goal is to abstract a lot of functionality related to Task orchestration and execution away. 
+Okay, that's a lot of buzz. So what is actually the point?
+
+Main goal is to abstract a lot of functionality related to Task orchestration and execution away while keeping the "API" clear and dead-simple.
 
 Currently this includes:
 - retries
