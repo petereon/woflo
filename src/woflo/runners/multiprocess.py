@@ -28,7 +28,7 @@ class MultiprocessTaskRun(BaseTaskRun):
 
         self.process.start()
 
-    def get_result(self, wait: bool = True, raise_exceptions: bool = False) -> Any:
+    def get_result(self, raise_exceptions: bool = False, wait: bool = True) -> Any:
         if not wait and self.is_running():
             raise RuntimeError(f'Task {self.instance_name} is still running')
         if self.is_running():
