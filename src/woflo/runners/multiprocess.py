@@ -9,7 +9,7 @@ from multiprocess.context import ForkProcess, Process, SpawnProcess
 from woflo.runners.base import BaseTaskRun
 
 if TYPE_CHECKING:
-    from woflo.task import Task
+    from woflo.task import Task  # pragma: no cover
 
 
 class MultiprocessTaskRun(BaseTaskRun):

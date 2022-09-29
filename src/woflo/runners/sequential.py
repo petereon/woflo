@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Callable
 from woflo.runners.base import BaseTaskRun
 
 if TYPE_CHECKING:
-    from woflo.task import Task
+    from woflo.task import Task  # pragma: no cover
 
 
 class SequentialTaskRun(BaseTaskRun):
@@ -17,12 +17,12 @@ class SequentialTaskRun(BaseTaskRun):
         self.instance_name = instance_name
         self.__result = fn(*args, **kwargs)
 
-    def get_result(self) -> Any:
+    def get_result(self, raise_exceptions: bool = False) -> Any:
         super().get_result()
-        success, value = self.__result
-        if success:
-            return value
-        raise value
+        success, res = self.__result
+        if raise_exceptions and not success:
+            raise res
+        return res
 
     def wait(self) -> None:
         super().wait()

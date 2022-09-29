@@ -9,10 +9,6 @@ line-length = 140
 skip-string-normalization = true
 extend-exclude = "(.venv)"
 
-[tool.ward.plugins.coverage]
-omit = ['*test*']
-report_type = ['term', 'xml']
-
 [tool.flake8]
 ignore = ["E203", "E266", "E501", "W503", "F403", "F401"]
 max-line-length = 140
@@ -68,7 +64,7 @@ uninstall-self = { shell = "poetry run pip uninstall woflo" }
 
 [tool.poetry]
 name = "woflo"
-version = "0.8.1"
+version = "0.8.2"
 description = "Python local-first no-bloat task orchestration framework "
 authors = ["Peter Vyboch <pvyboch1@gmail.com>"]
 license = "MIT"
@@ -124,3 +120,7 @@ type = 'markdown'
 
 [tool.ward]
 hook_module = ["ward_coverage"]
+
+[tool.ward.plugins.coverage]
+omit = ['*test*']
+report_type = ['term', 'xml']

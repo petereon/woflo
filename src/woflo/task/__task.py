@@ -68,14 +68,14 @@ class Task:
 
 @overload
 def task(fn: Callable) -> Task:
-    ...
+    ...  # pragma: no cover
 
 
 @overload
 def task(
     *, name: str = None, retries: int = 0, retry_wait_time: Union[float, int] = 0, runner: Type[BaseTaskRun] = MultiprocessTaskRun
 ) -> Callable[[Callable], Task]:
-    ...
+    ...  # pragma: no cover
 
 
 def task(

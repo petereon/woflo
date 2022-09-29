@@ -16,7 +16,7 @@ class BaseTaskRun:
     def __init__(self, task: Task, instance_name: str, fn: Callable, args: tuple, kwargs: dict):
         logger.info(f'Starting task `{instance_name}`')
 
-    def get_result(self) -> Any:
+    def get_result(self, raise_exceptions: bool = False) -> Any:
         pass  # pragma: no cover
 
     def wait(self) -> None:

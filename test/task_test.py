@@ -4,7 +4,7 @@ from unittest.mock import patch
 from multiprocess import Lock, Value
 from ward import raises, skip, test
 
-from woflo.runners import SequentialTaskRun
+from woflo.runners import MultiprocessTaskRun, SequentialTaskRun
 from woflo.task import Task, task
 
 
@@ -175,3 +175,69 @@ def _():
         return 1
 
     assert test_task().get_result() == 1
+
+
+@test('`SequentialTaskRun` returns exception when `raise_exceptions` is not set')
+def _():
+    @task(runner=SequentialTaskRun)
+    def test_task():
+        raise Exception('Failing Task')
+
+    res = test_task().get_result()
+    assert str(res) == 'Failing Task'
+    assert isinstance(res, Exception)
+
+
+@test('`SequentialTaskRun` returns exception when `raise_exceptions` is set to `False`')
+def _():
+    @task(runner=SequentialTaskRun)
+    def test_task():
+        raise Exception('Failing Task')
+
+    res = test_task().get_result(raise_exceptions=False)
+    assert str(res) == 'Failing Task'
+    assert isinstance(res, Exception)
+
+
+@test('`SequentialTaskRun` returns exception when `raise_exceptions` is set to `True`')
+def _():
+    @task(runner=SequentialTaskRun)
+    def test_task():
+        raise Exception('Failing Task')
+
+    with raises(Exception) as e:
+        test_task().get_result(raise_exceptions=True)
+    assert str(e.raised) == 'Failing Task'
+
+
+@test('`MultiprocessTaskRun` returns exception when `raise_exceptions` is not set')
+def _():
+    @task(runner=MultiprocessTaskRun)
+    def test_task():
+        raise Exception('Failing Task')
+
+    res = test_task().get_result()
+    assert str(res) == 'Failing Task'
+    assert isinstance(res, Exception)
+
+
+@test('`MultiprocessTaskRun` returns exception when `raise_exceptions` is set to `False`')
+def _():
+    @task(runner=MultiprocessTaskRun)
+    def test_task():
+        raise Exception('Failing Task')
+
+    res = test_task().get_result(raise_exceptions=False)
+    assert str(res) == 'Failing Task'
+    assert isinstance(res, Exception)
+
+
+@test('`MultiprocessTaskRun` returns exception when `raise_exceptions` is set to `True`')
+def _():
+    @task(runner=MultiprocessTaskRun)
+    def test_task():
+        raise Exception('Failing Task')
+
+    with raises(Exception) as e:
+        test_task().get_result(raise_exceptions=True)
+    assert str(e.raised) == 'Failing Task'
