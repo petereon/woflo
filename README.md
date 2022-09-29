@@ -1,7 +1,10 @@
 # woflo
 [![CI](https://github.com/petereon/woflo/actions/workflows/python-test.yml/badge.svg)](https://github.com/petereon/woflo/actions/workflows/python-test.yml)
 [![MyPy Lint](https://github.com/petereon/woflo/actions/workflows/python-lint.yml/badge.svg)](https://github.com/petereon/woflo/actions/workflows/python-lint.yml)
+[![codecov](https://codecov.io/gh/petereon/woflo/branch/master/graph/badge.svg?token=JDAVYDG3ST)](https://codecov.io/gh/petereon/woflo)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=petereon_woflo&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=petereon_woflo)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=petereon_woflo&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=petereon_woflo)
+![PyPI Downloads](https://img.shields.io/pypi/dm/woflo?color=g&label=%F0%9F%93%A5%20Downloads)
 
 ## Overview
 
