@@ -1,1 +1,1 @@
-from woflo.util.logger import logger
+from woflo.util.__logger import logger
