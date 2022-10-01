@@ -154,7 +154,7 @@ def _():
 
     test_task_run = test_task()
     with raises(RuntimeError) as e:
-        test_task_run.get_result(wait=False)
+        test_task_run.get_result(wait=False, raise_exceptions=True)
     assert str(e.raised) == f'Task {test_task_run.instance_name} is still running'
 
 
