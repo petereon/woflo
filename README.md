@@ -40,7 +40,7 @@ pip install ./woflo-<version>-py3-none-any.whl
 
 ## Examples
 
-Intended usage is by utilizing a decorator `@task`, consider a very simple example which would run 10 sleepy workers in parallel without blocking the main thread:
+Intended usage is by utilizing a decorator `@task`. Consider a very simple example which would run 10 sleepy workers in parallel without blocking the main thread:
 
 ```python
 import time
@@ -64,7 +64,7 @@ from woflo import task
 
 
 @task(retries=2, retry_sleep_time=5)
-def fetch_data_from_unstable_api():
+def fetch_data_from_api_on_unstable_connection():
     ...
 ```
 
@@ -134,9 +134,9 @@ The defualt task runner is `MultiprocessTaskRun`, which can run multiple tasks, 
 
 The defualt task runner, which can run multiple tasks, or even multiple instances of the same task at the same time in parallel in separate Python process.
 
-It offers two modes of operation:
-- `ForkProcess`, which forks a main process and inherits all of its state. Forking is default on Darwin and Linux (it is not available on Windows)
-- `SpawnProcess`, which spawns a new process with same global state
+It offers two modes of operation with different memory overhead [^1]:
+- `ForkProcess`, which forks a main process and inherits all of its state. `ForkProcess` is default on Darwin and Linux (it is not available on Windows)
+- `SpawnProcess`, which spawns a new process with some global state. `SpawnProcess` is default on Windows.
 
 This behavior can be configured by setting the `process_type`:
 
@@ -151,6 +151,8 @@ def sleepy_worker():
     print('I am done')
 
 ```
+
+[^1]: General recommendation is leaving this as default unless you run accross issues with memory usage. This would usually be the case in a memory intensive applications such as data pipeline-ning or ML. To appreciate the difference, please refer to [this article](https://britishgeologicalsurvey.github.io/science/python-forking-vs-spawn/) by Dr John A Stevenson. `SpawnProcess` tends to be problematic, so if you are not dead-set on using `Multiprocess` as your processing backend you'd probably be better of with `DaskTaskRun` (currently on a [Roadmap](./README.md#roadmap))
 
 ## Roadmap
 
