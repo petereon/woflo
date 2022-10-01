@@ -152,7 +152,7 @@ def sleepy_worker():
 
 ```
 
-[^1]: General recommendation is leaving this as default unless you run accross issues with memory usage. This would usually be the case in a memory intensive applications such as data pipeline-ning or ML. To appreciate the difference, please refer to [this article](https://britishgeologicalsurvey.github.io/science/python-forking-vs-spawn/) by Dr John A Stevenson. `SpawnProcess` tends to be problematic, so if you are not dead-set on using `Multiprocess` as your processing backend you'd probably be better of with `DaskTaskRun` (currently on a [Roadmap](./README.md#roadmap))
+[^1]: General recommendation is leaving this as default unless you run accross issues with memory usage. This would usually be the case in a memory intensive applications such as data pipeline-ning or ML. To appreciate the difference, please refer to [this article](https://britishgeologicalsurvey.github.io/science/python-forking-vs-spawn/) by Dr John A Stevenson. `SpawnProcess` tends to be problematic, so if you are not dead-set on using `Multiprocess` as your processing backend you'd probably be better off with `DaskTaskRun` (currently on a [Roadmap](./README.md#roadmap))
 
 ## Roadmap
 
