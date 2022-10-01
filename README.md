@@ -167,4 +167,5 @@ def sleepy_worker():
 
 - [x] ~~Processes potentially inherint a large in-memory state in MultiprocessTaskRun~~
 - [ ] `SpawnProcess` running into `OSError: [Errno 9] Bad file descriptor` on `macOS 12.6` when using `multiprocess.sharedctypes.Value` as reflected in [this issue](https://github.com/uqfoundation/multiprocess/issues/115)
-- [ ] Imports need some refactoring
+- [x] ~~Imports need some refactoring~~
+- [ ] `.get_result()` of `MultiprocessTaskRun` sometimes blocks forever instead of returning result if the result is too large (~ 60kb). This seems to be the case on both macOS and Linux at least.
