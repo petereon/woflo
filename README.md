@@ -158,14 +158,14 @@ def sleepy_worker():
 
 - [x] ~~Setup GitHub Actions, SonarCloud monitoring and Codecov~~
 - [x] ~~Make a PyPI Package~~
-- [ ] Decide on final API and create a version 1.x.x
-- [ ] Implement a Dask runner
 - [ ] Implement a Thread runner
+- [ ] Implement a Dask runner
 - [ ] Implement an Async runner
+- [ ] Decide on final API and create a version 1.x.x
 
 ## Known issues
 
 - [x] ~~Processes potentially inherint a large in-memory state in MultiprocessTaskRun~~
-- [ ] `SpawnProcess` running into `OSError: [Errno 9] Bad file descriptor` on `macOS 12.6` when using `multiprocess.sharedctypes.Value` as reflected in [this issue](https://github.com/uqfoundation/multiprocess/issues/115)
 - [x] ~~Imports need some refactoring~~
+- [ ] `SpawnProcess` running into `OSError: [Errno 9] Bad file descriptor` on `macOS 12.6` when using `multiprocess.sharedctypes.Value` as reflected in [this issue](https://github.com/uqfoundation/multiprocess/issues/115)
 - [ ] `.get_result()` of `MultiprocessTaskRun` sometimes blocks forever instead of returning result if the result is too large (~ 60kb). This seems to be the case on both macOS and Linux at least.
