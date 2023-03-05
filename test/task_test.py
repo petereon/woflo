@@ -1,10 +1,11 @@
+import asyncio
 import time
 from unittest.mock import patch
 
 from multiprocess import Lock, Value
 from ward import raises, skip, test
 
-from woflo.runners import MultiprocessTaskRun, SequentialTaskRun
+from woflo.runners import AsyncTaskRun, MultiprocessTaskRun, SequentialTaskRun
 from woflo.task import Task, task
 
 
@@ -241,3 +242,50 @@ def _():
     with raises(Exception) as e:
         test_task().get_result(raise_exceptions=True)
     assert str(e.raised) == 'Failing Task'
+
+
+@test('`AsyncTaskRun` runs asynchronously')
+async def _():
+    @task(runner=AsyncTaskRun)
+    async def task1():
+        await asyncio.sleep(1)
+        return 1
+
+    @task(runner=AsyncTaskRun)
+    async def task2():
+        await asyncio.sleep(2)
+        return 2
+
+    start = time.time()
+
+    task_run1 = task1()
+    task_run2 = task2()
+
+    res1 = await task_run1.get_result()
+    res2 = await task_run2.get_result()
+
+    assert res1 == 1
+    assert res2 == 2
+    assert (time.time() - start) < 3
+
+
+@test('`AsyncTaskRun`s can block themselves')
+async def _():
+    @task(runner=AsyncTaskRun)
+    async def task1():
+        await asyncio.sleep(2)
+        return 1
+
+    @task(runner=AsyncTaskRun)
+    async def task2():
+        await asyncio.sleep(2)
+        return 2
+
+    start = time.time()
+
+    task_run1 = task1()
+    await task_run1.wait()
+    task_run2 = task2()
+    await task_run2.wait()
+
+    assert (time.time() - start) > 4
