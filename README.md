@@ -160,7 +160,7 @@ def sleepy_worker():
 - [x] ~~Make a PyPI Package~~
 - [ ] Implement a Thread runner
 - [ ] Implement a Dask runner
-- [ ] Implement an Async runner
+- [x] ~~Implement an Async runner~~
 - [ ] Decide on final API and create a version 1.x.x
 
 ## Known issues
